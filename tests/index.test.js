@@ -1,4 +1,4 @@
-const directoryToTree = require("../app");
+const directoryToTree = require("../directoryToTree");
 
 describe("Tests for code challenge", () => {
   test("should throw an error if there isn't any value for rootPath param", () => {

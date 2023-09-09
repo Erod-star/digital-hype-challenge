@@ -1,65 +1,37 @@
-const fs = require("fs");
-/**
- * Returns something...
- * @param {string} rootPath - The path to the root directory to process
- * @param {string} maxDepth - The depth of the directory tree to include in the
- * result structure
- * @returns {Object} result - Represents the tree structure
- * @param {string} result.name - The name of the file or directory
- * @param {string} result.path - The path to the file or directory, starting
- * from and including the roothPath
- * @param {number} result.size - An integer representing the file or directory size in bytes
- * @param {Array} result.children - for all "dir" nodes (even if empty) and absent for
- * all "file" nodes.
- */
-const directoryToTree = (rootPath, maxDepth) => {
-  // ? Validations
-  if (!rootPath || typeof rootPath !== "string") {
-    throw new Error("You must provide a valid path");
-  }
-  if (maxDepth < 0 || typeof maxDepth !== "number") {
-    throw new Error("You must provide a valid depth value");
-  }
+import "colors";
+import { inquirerMenu, stop, readInput } from "./helpers/inquirer.js";
+import { saveTreeResult } from "./helpers/saveFile.js";
+import { directoryToTree } from "./directoryToTree.js";
 
-  // ? Solution
-  const pathSections = rootPath.split("/");
-  const name = pathSections[pathSections.length - 1];
-  const size = fs.statSync(rootPath).size;
-  const type = fs.lstatSync(rootPath).isDirectory() ? "dir" : "file";
+console.clear();
 
-  const files = fs.readdirSync(rootPath).map((file) => `${rootPath}/${file}`);
-  const directoriesPaths = files.filter((path) =>
-    fs.lstatSync(path).isDirectory()
-  );
-  const filesPaths = files.filter((path) => fs.lstatSync(path).isFile());
+const app = async () => {
+  let opt = "";
 
-  const result = {
-    path: rootPath,
-    name,
-    type,
-    size,
-    children: [],
-  };
+  do {
+    opt = await inquirerMenu();
+    switch (opt) {
+      case "1":
+        const rootPath = await readInput("Provide the rootPath: ");
+        console.log(rootPath);
+        const maxDepth = await readInput("Provide the maxDepth: ");
+        console.log(maxDepth);
+        console.log("--- Directory tree ----".green);
+        const result = directoryToTree(rootPath, +maxDepth);
+        console.log(result);
+        saveTreeResult(JSON.stringify(result));
+        console.log(
+          `\nYou can see the full directory tree on the ${
+            "tree.json".yellow
+          } file at the ${
+            "results".yellow
+          } folder at the root of the project :D\n`
+        );
+        break;
+    }
 
-  if (maxDepth === 0) return result;
-
-  const childrenFiles = filesPaths.map((path) => {
-    const fileNameSplited = path.split("/");
-    const fileName = fileNameSplited[fileNameSplited.length - 1];
-    return {
-      path: path,
-      name: fileName,
-      type: "file",
-      size: fs.statSync(path).size,
-    };
-  });
-
-  const childrenDirectories = directoriesPaths.map((path) =>
-    directoryToTree(path, maxDepth - 1)
-  );
-
-  result.children = [...childrenFiles, ...childrenDirectories];
-  return result;
+    await stop();
+  } while (opt !== "0");
 };
 
-module.exports = directoryToTree;
+app();
