@@ -32,6 +32,9 @@ npm run app
 
 Once open up you can try the function or exit the app. For testing the function you'll be asked to provide the **rootPath** and the **maxDepth**, and then the application will show you the output of the function
 
-**NOTE**: You can see a more detailed tree on the `results/tree.json` file on the root of the project
+### NOTES
+
+- You can see a more detailed tree of the result on the `results/tree.json` file on the root of the project
+- For this specific project the package [inquirer](https://www.npmjs.com/package/inquirer), doesn't support the the ES module scope, so the `require` keyword don't work, for this I changed the way of using files and packages to `import`
 
 ### Happy review! 🚀

@@ -61,5 +61,3 @@ export const directoryToTree = (rootPath, maxDepth) => {
   result.children = [...childrenFiles, ...childrenDirectories];
   return result;
 };
-
-// module.exports = directoryToTree;

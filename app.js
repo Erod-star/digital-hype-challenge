@@ -19,7 +19,7 @@ const app = async () => {
         console.log("--- Directory tree ----".green);
         const result = directoryToTree(rootPath, +maxDepth);
         console.log(result);
-        saveTreeResult(JSON.stringify(result));
+        saveTreeResult(JSON.stringify(result, null, 4));
         console.log(
           `\nYou can see the full directory tree on the ${
             "tree.json".yellow
